@@ -2,15 +2,33 @@
 <html>
 <head>
     <title>枣阳市第二人民医院管理系统--中软高科2015</title>
-	<meta charset="UTF-8">
-   <link rel="stylesheet" type="text/css" href="Css/bootstrap.css" />
-    <link rel="stylesheet" type="text/css" href="Css/bootstrap-responsive.css" />
-    <link rel="stylesheet" type="text/css" href="Css/style.css" />
-    <script type="text/javascript" src="Js/jquery.js"></script>
-    <script type="text/javascript" src="Js/jquery.sorted.js"></script>
-    <script type="text/javascript" src="Js/bootstrap.js"></script>
-    <script type="text/javascript" src="Js/ckform.js"></script>
-    <script type="text/javascript" src="Js/common.js"></script>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="/html/Css/bootstrap.css"/>
+    <link rel="stylesheet" type="text/css" href="/html/Css/bootstrap-responsive.css"/>
+    <link rel="stylesheet" type="text/css" href="/html/Css/style.css"/>
+    <script type="text/javascript" src="/html/Js/jquery.js"></script>
+    <script type="text/javascript" src="/html/Js/bootstrap.js"></script>
+    <script type="text/javascript" src="/html/Js/ckform.js"></script>
+    <script type="text/javascript" src="/html/Js/common.js"></script>
+    <script>
+        $(function () {
+            $("#login-button").click(function () {
+                var username = $("#username").val();
+                var password = $("#password").val();
+                if (username !=="" && password !== "") {
+                    $.post("/user/loginIn", {username: username, password: password}, function (data) {
+                        if (data.msg === "ok") {
+                            location.assign("/html/index.html?u_trueName="+data.obj.u_trueName);
+                        } else {
+                            alert("账号或密码错误！");
+                        }
+                    }, "JSON");
+                } else {
+                    alert("账号和密码不能为空！");
+                }
+            });
+        });
+    </script>
     <style type="text/css">
         body {
             padding-top: 40px;
@@ -45,18 +63,23 @@
             padding: 7px 9px;
         }
 
-    </style>  
+    </style>
+
 </head>
 <body>
 <div class="container">
 
-    <form class="form-signin" method="post" action="index.html#1/2">
+    <form class="form-signin">
         <h2 class="form-signin-heading">&nbsp;&nbsp;&nbsp;登录系统</h2>
-        <input type="text" name="username" class="input-block-level" placeholder="账号">
-        <input type="password" name="password" class="input-block-level" placeholder="密码">
+        <input type="text" id="username" class="input-block-level" placeholder="账号">
+
+        <input type="password" id="password" class="input-block-level" placeholder="密码">
+
         <input type="text" name="verify" class="input-medium" placeholder="验证码">7236
-       
-        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button class="btn btn-large btn-primary" type="submit">登录</button></p>
+
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button class="btn btn-large btn-primary" id="login-button" type="button">登录
+        </button>
+        </p>
     </form>
 
 </div>
