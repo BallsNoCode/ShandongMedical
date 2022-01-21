@@ -1,7 +1,7 @@
 import com.github.pagehelper.PageInfo;
+import com.kkb.pojo.Hosregister;
 import com.kkb.service.hosService;
-import com.kkb.vo.HosResultVO;
-import javafx.application.HostServices;
+import com.kkb.vo.QueryHosVO;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -18,7 +18,9 @@ public class hosRegisterServiceTest {
 
     @Test
     public void queryAllTest(){
-        HosResultVO hosResultVO = hosService.queryLook(1002);
-        System.out.println(hosResultVO);
+        QueryHosVO vo = new QueryHosVO();
+        PageInfo<Hosregister> test = hosService.queryByPage(1, vo);
+        System.out.println(test);
+
     }
 }

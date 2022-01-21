@@ -13,6 +13,17 @@ public class QueryHosVO {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date endDate;
 
+    @Override
+    public String toString() {
+        return "QueryHosVO{" +
+                "hosR_id=" + hosR_id +
+                ", d_name='" + d_name + '\'' +
+                ", d_keshi='" + d_keshi + '\'' +
+                ", beginDate=" + beginDate +
+                ", endDate=" + endDate +
+                '}';
+    }
+
     public Integer getHosR_id() {
         return hosR_id;
     }

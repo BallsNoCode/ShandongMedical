@@ -68,8 +68,8 @@
                         let hosR_age = vo.hosR_age;
                         let hosR_work = vo.hosR_work == null ? "无" : vo.hosR_work;
                         let hosR_lookDoctor = vo.hosR_lookDoctor === '0' ? "初诊" : "复诊";
-                        let d_keshi = vo.d_keshi;
-                        let d_name = vo.d_name;
+                        let d_keshi = vo.doctor.d_keshi;
+                        let d_name = vo.doctor.d_name;
                         let hosR_remark = vo.hosR_remark == null ? "无" : vo.hosR_remark;
 
                         str += '<tr>' +

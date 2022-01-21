@@ -3,7 +3,6 @@ package com.kkb.controller;
 import com.github.pagehelper.PageInfo;
 import com.kkb.pojo.Hosregister;
 import com.kkb.service.hosService;
-import com.kkb.vo.HosResultVO;
 import com.kkb.vo.QueryHosVO;
 import com.kkb.vo.ResultVO;
 import org.springframework.stereotype.Controller;
@@ -25,20 +24,33 @@ public class hosController {
     private hosService hosService;
 
     @RequestMapping(value = "info", method = RequestMethod.GET)
-    public ResultVO<HosResultVO> queryByPage(Integer pageNum, Integer pageSize, QueryHosVO vo) {
-        if (pageNum == null || pageNum <= 0) {
+    public ResultVO<Hosregister> queryByPage(Integer pageNum, QueryHosVO vo) {
+        if (pageNum == null || pageNum < 1){
             pageNum = 1;
         }
-        if (pageSize == null || pageSize <= 0) {
-            pageSize = 5;
-        }
-        PageInfo<HosResultVO> hosResultVOPageInfo = hosService.queryByPage(pageNum, pageSize, vo);
-        return new ResultVO<>(hosResultVOPageInfo);
+        PageInfo<Hosregister> hosregisterPageInfo = hosService.queryByPage(pageNum, vo);
+        return new ResultVO<>(hosregisterPageInfo);
     }
 
+    @RequestMapping(value = "{id}", method = RequestMethod.GET)
+    public Hosregister queryById(Integer HosR_id){
+        return hosService.queryById(HosR_id);
+    }
+
+
     @RequestMapping(value = "look",method = RequestMethod.GET)
-    public HosResultVO queryLook(Integer HosR_id){
-        HosResultVO hosResultVO = hosService.queryLook(HosR_id);
-        return hosResultVO;
+    public Hosregister queryLook(Integer HosR_id){
+        Hosregister hosregister = hosService.queryLook(HosR_id);
+        return hosregister;
+    }
+
+    @RequestMapping(value = "quit", method = RequestMethod.POST)
+    public Integer quitHos(Integer HosR_id){
+        return hosService.quitHos(HosR_id);
+    }
+
+    @RequestMapping(value = "update",method = RequestMethod.POST)
+    public Integer update(Hosregister hosregister){
+        return hosService.updateHos(hosregister);
     }
 }
