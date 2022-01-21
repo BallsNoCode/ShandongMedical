@@ -99,7 +99,7 @@
                         let hosR_state = '';
                         let btnStr = '';
                         if (obj.hosR_state !== 3) {
-                            btnStr = '<a onclick="look(' + hosR_id + ')" href="#">详情>>></a>&nbsp;&nbsp;&nbsp;<a href="edit.html">更改</a>&nbsp;&nbsp;&nbsp;<a\n' +
+                            btnStr = '<a onclick="look(' + hosR_id + ')" href="#">详情>>></a>&nbsp;&nbsp;&nbsp;<a href="#" onclick="update('+hosR_id+')">更改</a>&nbsp;&nbsp;&nbsp;<a\n' +
                                 '                href="javascript:void(0);" onclick="quitHos('+hosR_id+','+pageNum+')">退号</a>'
                         }
                         if (obj.hosR_state === 0) {
@@ -132,8 +132,8 @@
             window.location.href = "look.html?hosR_id=" + hosR_id;
         }
 
-        function page(pageNum) {
-            loadData(pageNum);
+        function update(hosR_id) {
+            window.location.href="edit.html?hosR_id=" + hosR_id;
         }
 
         function quitHos(hosR_id,pageNum) {
@@ -157,14 +157,14 @@
 
         function fillPageData(pageInfo) {
             let pageStr = '';
-            pageStr += '<a id="firstPage" href="javascript:void(0)" onclick="page(1)">第一页</a>\n' +
-                '                <a href="javascript:void(0)" onclick="page('+pageInfo.prePage+')">上一页</a>\n';
+            pageStr += '<a id="firstPage" href="javascript:void(0)" onclick="loadData(1)">第一页</a>\n' +
+                '                <a href="javascript:void(0)" onclick="loadData('+pageInfo.prePage+')">上一页</a>\n';
             for (let i = 1; i <= pageInfo.pages ; i++) {
-                pageStr += '                <a href="javascript:void(0)" onclick="page('+i+')">'+i+'</a>\n'
+                pageStr += '                <a href="javascript:void(0)" onclick="loadData('+i+')">'+i+'</a>\n'
             }
             pageStr +=
-                '                <a href="javascript:void(0)" onclick="page('+pageInfo.nextPage+')">下一页</a>\n' +
-                '                <a href="javascript:void(0)" onclick="page('+pageInfo.total+')">最后一页</a>\n' +
+                '                <a href="javascript:void(0)" onclick="loadData('+pageInfo.nextPage+')">下一页</a>\n' +
+                '                <a href="javascript:void(0)" onclick="loadData('+pageInfo.total+')">最后一页</a>\n' +
                 '                &nbsp;&nbsp;&nbsp;共<span class=\'current\' id="total"></span>条记录<span id="pages" class=\'current\'></span>页'
             $("#page").html(pageStr);
             $("#total").html(pageInfo.total);
@@ -223,8 +223,8 @@
             <div class="inline pull-right page" id="page" >
                 <a href="javascript:void(0)">第一页</a>
                 <a href="javascript:void(0)">上一页</a>
-                <a href="javascript:void(0)" onclick="page(1)">1</a>
-                <a href="javascript:void(0)" onclick="page(2)">下一页</a>
+                <a href="javascript:void(0)">1</a>
+                <a href="javascript:void(0)">下一页</a>
                 <a href="javascript:void(0)">最后一页</a>
                 &nbsp;&nbsp;&nbsp;共<span class='current' id="total"></span>条记录<span id="pages" class='current'></span>页
             </div>

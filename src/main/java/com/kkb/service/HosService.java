@@ -20,7 +20,7 @@ import java.util.List;
  * @author APPDE
  */
 @Service
-public class hosService {
+public class HosService {
 
     @Resource
     private HosregisterMapper hosregisterMapper;
@@ -66,14 +66,8 @@ public class hosService {
         return new PageInfo<>(hosregisters);
     }
 
-    @Transactional(propagation = Propagation.REQUIRED,readOnly = true)
-    public Hosregister queryById(Integer HosR_id){
-        return hosregisterMapper.selectByPrimaryKey(HosR_id);
-    }
-
-
     @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
-    public Hosregister queryLook(Integer HosR_id) {
+    public Hosregister queryById(Integer HosR_id) {
         Hosregister hosregister = hosregisterMapper.selectByPrimaryKey(HosR_id);
         Doctor doctor = doctorMapper.selectByPrimaryKey(hosregister.getD_id());
         hosregister.setDoctor(doctor);

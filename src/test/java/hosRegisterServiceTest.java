@@ -1,6 +1,6 @@
 import com.github.pagehelper.PageInfo;
 import com.kkb.pojo.Hosregister;
-import com.kkb.service.hosService;
+import com.kkb.service.HosService;
 import com.kkb.vo.QueryHosVO;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,7 +14,7 @@ import javax.annotation.Resource;
 public class hosRegisterServiceTest {
 
     @Resource
-    private hosService hosService;
+    private HosService hosService;
 
     @Test
     public void queryAllTest(){

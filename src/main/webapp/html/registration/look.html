@@ -51,7 +51,7 @@
                 let hosR_id = document.location.toString().GetValue("hosR_id");
                 $.ajax({
                     type: "GET",
-                    url: "/registration/look",
+                    url: "/registration/"+hosR_id,
                     data: {
                         HosR_id : hosR_id
                     },
@@ -63,11 +63,11 @@
                         let hosR_regPrice = vo.hosR_regPrice;
                         let hosR_medical = vo.hosR_medical;
                         let hosR_phone = vo.hosR_phone;
-                        let hosR_selfPrice = vo.hosR_selfPrice === '0' ? "是" : "否";
-                        let hosR_sex = vo.hosR_sex === '0' ? "男" : "女";
+                        let hosR_selfPrice = vo.hosR_selfPrice === 0 ? "是" : "否";
+                        let hosR_sex = vo.hosR_sex === 0 ? "男" : "女";
                         let hosR_age = vo.hosR_age;
                         let hosR_work = vo.hosR_work == null ? "无" : vo.hosR_work;
-                        let hosR_lookDoctor = vo.hosR_lookDoctor === '0' ? "初诊" : "复诊";
+                        let hosR_lookDoctor = vo.hosR_lookDoctor === 0 ? "初诊" : "复诊";
                         let d_keshi = vo.doctor.d_keshi;
                         let d_name = vo.doctor.d_name;
                         let hosR_remark = vo.hosR_remark == null ? "无" : vo.hosR_remark;

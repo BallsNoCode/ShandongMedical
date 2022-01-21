@@ -2,10 +2,11 @@ package com.kkb.controller;
 
 import com.github.pagehelper.PageInfo;
 import com.kkb.pojo.Hosregister;
-import com.kkb.service.hosService;
+import com.kkb.service.HosService;
 import com.kkb.vo.QueryHosVO;
 import com.kkb.vo.ResultVO;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -18,10 +19,10 @@ import javax.annotation.Resource;
 @Controller
 @RequestMapping("registration")
 @ResponseBody
-public class hosController {
+public class HosController {
 
     @Resource
-    private hosService hosService;
+    private HosService hosService;
 
     @RequestMapping(value = "info", method = RequestMethod.GET)
     public ResultVO<Hosregister> queryByPage(Integer pageNum, QueryHosVO vo) {
@@ -33,16 +34,10 @@ public class hosController {
     }
 
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
-    public Hosregister queryById(Integer HosR_id){
+    public Hosregister queryById(@PathVariable("id") Integer HosR_id){
         return hosService.queryById(HosR_id);
     }
 
-
-    @RequestMapping(value = "look",method = RequestMethod.GET)
-    public Hosregister queryLook(Integer HosR_id){
-        Hosregister hosregister = hosService.queryLook(HosR_id);
-        return hosregister;
-    }
 
     @RequestMapping(value = "quit", method = RequestMethod.POST)
     public Integer quitHos(Integer HosR_id){
