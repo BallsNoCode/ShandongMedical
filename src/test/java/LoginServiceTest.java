@@ -1,5 +1,5 @@
 import com.kkb.pojo.User;
-import com.kkb.service.LoginService;
+import com.kkb.service.AdminService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -12,7 +12,7 @@ import java.util.List;
 @ContextConfiguration(locations = {"classpath:spring.xml"})
 public class LoginServiceTest {
     @Resource
-    private LoginService loginService = new LoginService();
+    private AdminService loginService = new AdminService();
 
     @Test
     public void loginInTest(){

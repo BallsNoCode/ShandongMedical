@@ -21,15 +21,15 @@
                 },"JSON");
             });
             $("#login-button").click(function () {
-                var username = $("#username").val();
+                var loginName = $("#loginName").val();
                 var password = $("#password").val();
                 var code = $("#code").val();
                 var verify = $("#verify").html();
                 if (code === verify){
-                    if (username !=="" && password !== "") {
-                        $.post("/user/loginIn", {username: username, password: password,verify: verify}, function (data) {
+                    if (loginName !=="" && password !== "") {
+                        $.post("/user/loginIn", {loginName: loginName, password: password,verify: verify}, function (data) {
                             if (data.msg === "ok") {
-                                location.assign("/html/index.html?u_trueName="+data.obj.u_trueName);
+                                location.assign("/html/index.html?u_trueName="+data.obj.u_trueName+"&end");
                             } else {
                                 alert("账号或密码错误！");
                             }
@@ -86,7 +86,7 @@
 
     <form class="form-signin">
         <h2 class="form-signin-heading">&nbsp;&nbsp;&nbsp;登录系统</h2>
-        <input type="text" id="username" class="input-block-level" placeholder="账号">
+        <input type="text" id="loginName" class="input-block-level" placeholder="账号">
 
         <input type="password" id="password" class="input-block-level" placeholder="密码">
 

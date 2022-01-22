@@ -1,7 +1,7 @@
 package com.kkb.controller;
 
 import com.kkb.pojo.User;
-import com.kkb.service.LoginService;
+import com.kkb.service.AdminService;
 import com.kkb.util.RandomUtil;
 import com.kkb.vo.ResultVO;
 import org.springframework.stereotype.Controller;
@@ -13,6 +13,7 @@ import javax.annotation.Resource;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
 
@@ -22,15 +23,15 @@ import java.util.List;
 @Controller
 @RequestMapping("user")
 @ResponseBody
-public class LoginController {
+public class AdminController {
     @Resource
-    private LoginService loginService = new LoginService();
+    private AdminService adminService = new AdminService();
     private RandomUtil randomUtil = new RandomUtil();
 
     @RequestMapping(value = "loginIn", method = RequestMethod.POST)
-    public ResultVO<User> loginIn(Integer username, String password) {
-
-        List<User> userList = loginService.checkLogin(username, password);
+    public ResultVO<User> loginIn(Integer loginName, String password ,HttpSession session) {
+        session.setAttribute("user",loginName);
+        List<User> userList = adminService.checkLogin(loginName, password);
         if (userList.size() == 0) {
             return new ResultVO<>(500, "服务器异常");
         }
@@ -40,7 +41,7 @@ public class LoginController {
 
 
     @RequestMapping(value = "loginOut", method = RequestMethod.GET)
-    public void loginOut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    public void loginOut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         req.getSession().invalidate();
         resp.sendRedirect("/html/login.html");
     }
@@ -48,5 +49,16 @@ public class LoginController {
     @RequestMapping(value = "verify", method = RequestMethod.POST)
     public Integer verify() {
         return randomUtil.RandomNum();
+    }
+
+    @RequestMapping(value = "changePassword",method = RequestMethod.POST)
+    public ResultVO<User> changePassword(String password,String newPassword,HttpSession session){
+        Integer loginName = (Integer) session.getAttribute("user");
+        System.out.println(loginName);
+        Integer integer = adminService.changePassword(loginName,password, newPassword);
+        if (integer == 1) {
+            return new ResultVO<>();
+        }
+        return new ResultVO<>(500, "修改失败请查询密码！");
     }
 }
