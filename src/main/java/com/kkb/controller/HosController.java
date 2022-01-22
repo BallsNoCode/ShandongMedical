@@ -26,7 +26,7 @@ public class HosController {
 
     @RequestMapping(value = "info", method = RequestMethod.GET)
     public ResultVO<Hosregister> queryByPage(Integer pageNum, QueryHosVO vo) {
-        if (pageNum == null || pageNum < 1){
+        if (pageNum == null || pageNum < 1) {
             pageNum = 1;
         }
         PageInfo<Hosregister> hosregisterPageInfo = hosService.queryByPage(pageNum, vo);
@@ -34,18 +34,38 @@ public class HosController {
     }
 
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
-    public Hosregister queryById(@PathVariable("id") Integer HosR_id){
-        return hosService.queryById(HosR_id);
+    public ResultVO<Hosregister> queryById(@PathVariable("id") Integer HosR_id) {
+        Hosregister hosregister = hosService.queryById(HosR_id);
+        return new ResultVO<>(hosregister);
     }
 
 
-    @RequestMapping(value = "quit", method = RequestMethod.POST)
-    public Integer quitHos(Integer HosR_id){
-        return hosService.quitHos(HosR_id);
+    @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
+    public ResultVO<Hosregister> quitHos(@PathVariable("id") Integer HosR_id) {
+        Integer integer = hosService.quitHos(HosR_id);
+        if (integer == 1) {
+            return new ResultVO<>();
+        }
+        return new ResultVO<>(500, "服务器内部异常，请稍后再试！");
     }
 
-    @RequestMapping(value = "update",method = RequestMethod.POST)
-    public Integer update(Hosregister hosregister){
-        return hosService.updateHos(hosregister);
+    @RequestMapping(value = "{id}", method = RequestMethod.PUT)
+    public ResultVO<Hosregister> update(@PathVariable("id") Integer HosR_id, Hosregister hosregister) {
+        hosregister.setHosR_id(HosR_id);
+        Integer integer = hosService.updateHos(hosregister);
+        if (integer == 1) {
+            return new ResultVO<>();
+        }
+        return new ResultVO<>(500, "服务器内部异常，请稍后再试！");
+    }
+
+    @RequestMapping(value = "insert",method = RequestMethod.POST)
+    public ResultVO<Hosregister> insert(Hosregister hosregister){
+        hosregister.setHosR_state(0);
+        Integer integer = hosService.insertHos(hosregister);
+        if (integer == 1) {
+            return new ResultVO<>();
+        }
+        return new ResultVO<>(500, "服务器内部异常，请稍后再试！");
     }
 }

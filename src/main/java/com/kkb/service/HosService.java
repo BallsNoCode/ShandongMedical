@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -86,5 +87,9 @@ public class HosService {
         return hosregisterMapper.updateByPrimaryKeySelective(hosregister);
     }
 
-
+    @Transactional(propagation = Propagation.REQUIRED,rollbackFor = Exception.class)
+    public Integer insertHos(Hosregister hosregister){
+        hosregister.setHosR_time(new Date());
+        return hosregisterMapper.insert(hosregister);
+    }
 }

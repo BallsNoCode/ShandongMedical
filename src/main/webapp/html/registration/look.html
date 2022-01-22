@@ -42,9 +42,11 @@
                 if (r != null) return decodeURI(r[2]);
                 return null;
             }
+            let url = document.location.toString();
+            let pageNum=url.GetValue("pageNum");
             loadData();
             $('#backid').click(function () {
-                window.location.href = "index.html";
+                window.location.href = "index.html?pageNum=" + pageNum;
             });
 
             function loadData() {
@@ -58,19 +60,19 @@
                     dataType: "json",
                     success: function (vo) {
                         let str = "";
-                        let hosR_name = vo.hosR_name;
-                        let hosR_idCard = vo.hosR_idCard;
-                        let hosR_regPrice = vo.hosR_regPrice;
-                        let hosR_medical = vo.hosR_medical;
-                        let hosR_phone = vo.hosR_phone;
-                        let hosR_selfPrice = vo.hosR_selfPrice === 0 ? "是" : "否";
-                        let hosR_sex = vo.hosR_sex === 0 ? "男" : "女";
-                        let hosR_age = vo.hosR_age;
-                        let hosR_work = vo.hosR_work == null ? "无" : vo.hosR_work;
-                        let hosR_lookDoctor = vo.hosR_lookDoctor === 0 ? "初诊" : "复诊";
-                        let d_keshi = vo.doctor.d_keshi;
-                        let d_name = vo.doctor.d_name;
-                        let hosR_remark = vo.hosR_remark == null ? "无" : vo.hosR_remark;
+                        let hosR_name = vo.obj.hosR_name;
+                        let hosR_idCard = vo.obj.hosR_idCard;
+                        let hosR_regPrice = vo.obj.hosR_regPrice;
+                        let hosR_medical = vo.obj.hosR_medical;
+                        let hosR_phone = vo.obj.hosR_phone;
+                        let hosR_selfPrice = vo.obj.hosR_selfPrice === 0 ? "是" : "否";
+                        let hosR_sex = vo.obj.hosR_sex === 0 ? "男" : "女";
+                        let hosR_age = vo.obj.hosR_age;
+                        let hosR_work = vo.obj.hosR_work == null ? "无" : vo.obj.hosR_work;
+                        let hosR_lookDoctor = vo.obj.hosR_lookDoctor === 0 ? "初诊" : "复诊";
+                        let d_keshi = vo.obj.doctor.d_keshi;
+                        let d_name = vo.obj.doctor.d_name;
+                        let hosR_remark = vo.obj.hosR_remark == null ? "无" : vo.obj.hosR_remark;
 
                         str += '<tr>' +
                             '       <td width="10%" className="tableleft">姓名</td>' +

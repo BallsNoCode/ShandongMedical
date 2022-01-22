@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>挂号--中软高科-2015</title>
+    <title>更改挂号--中软高科-2015</title>
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" href="../Css/bootstrap.css"/>
     <link rel="stylesheet" type="text/css" href="../Css/bootstrap-responsive.css"/>
@@ -43,12 +43,13 @@
                 if (r != null) return unescape(r[2]);
                 return null;
             }
-            let url = document.location.toString();//获取URL
+            let url = document.location.toString();
+            let pageNum=url.GetValue("pageNum");
             let hosR_id = url.GetValue("hosR_id");
             selectkeshi();
-            queryById(hosR_id);
+            queryById();
             $('#backid').click(function () {
-                window.location.href = "index.html";
+                window.location.href = "index.html?pageNum=" + pageNum;
             });
 
             function selectkeshi() {
@@ -73,21 +74,11 @@
             }
 
             function selectdoctor(d_keshi) {
-                /*switch (d_keshi) {
-                    case "外科" :
-                        $("#doctor").html("<option>荀彧</option><option>曹操</option>");
-                        break;
-                    case "内科" :
-                        $("#doctor").html("<option>刘备</option><option>诸葛亮</option>");
-                        break;
-                    default :
-                        alert("erro");
-                }*/
-                $("#doctor").html("<option></option>");
+                $("#doctor").html("");
                 for (let i = 0; i < list.length; i++) {
                     let obj = list[i];
-                    if (obj.d_keshi === d_keshi){
-                        $("#doctor").append("<option>"+obj.d_name+"</option>");
+                    if (obj.d_keshi === d_keshi) {
+                        $("#doctor").append("<option value='"+obj.d_id+"'>" + obj.d_name + "</option>");
                     }
 
                 }
@@ -95,27 +86,27 @@
 
             $("#keshi").blur(function () {
                 selectdoctor($("#keshi").val());
-            })
+            });
 
-            function queryById(hosR_id) {
+            function queryById() {
                 $.ajax({
                     type: "GET",
                     url: "/registration/" + hosR_id,
                     data: "",
                     success: function (vo) {
-                        let hosR_name = vo.hosR_name;
-                        let hosR_idCard = vo.hosR_idCard;
-                        let hosR_regPrice = vo.hosR_regPrice;
-                        let hosR_medical = vo.hosR_medical;
-                        let hosR_phone = vo.hosR_phone;
-                        let hosR_selfPrice = vo.hosR_selfPrice === 0;
-                        let hosR_sex = vo.hosR_sex === 0;
-                        let hosR_age = vo.hosR_age;
-                        let hosR_work = vo.hosR_work == null ? "无" : vo.hosR_work;
-                        let hosR_lookDoctor = vo.hosR_lookDoctor === 0;
-                        let d_keshi = vo.doctor.d_keshi;
-                        let d_name = vo.doctor.d_name;
-                        let hosR_remark = vo.hosR_remark == null ? "无" : vo.hosR_remark;
+                        let hosR_name = vo.obj.hosR_name;
+                        let hosR_idCard = vo.obj.hosR_idCard;
+                        let hosR_regPrice = vo.obj.hosR_regPrice;
+                        let hosR_medical = vo.obj.hosR_medical;
+                        let hosR_phone = vo.obj.hosR_phone;
+                        let hosR_selfPrice = vo.obj.hosR_selfPrice === 0;
+                        let hosR_sex = vo.obj.hosR_sex === 0;
+                        let hosR_age = vo.obj.hosR_age;
+                        let hosR_work = vo.obj.hosR_work == null ? "无" : vo.obj.hosR_work;
+                        let hosR_lookDoctor = vo.obj.hosR_lookDoctor === 0;
+                        let d_keshi = vo.obj.doctor.d_keshi;
+                        let d_name = vo.obj.doctor.d_name;
+                        let hosR_remark = vo.obj.hosR_remark == null ? "无" : vo.obj.hosR_remark;
                         $("input[name='hosR_name']").val(hosR_name);
                         $("input[name='hosR_idCard']").val(hosR_idCard);
                         $("input[name='hosR_regPrice']").val(hosR_regPrice);
@@ -135,11 +126,27 @@
                 });
 
             }
+
+            $("#btnUpdate").click(function () {
+                $.ajax({
+                    type: "POST",
+                    url: "/registration/" + hosR_id,
+                    data: $("#myForm").serialize() + "&_method=PUT",
+                    dataType: "json",
+                    success: function (vo) {
+                        if (vo.code === 200) {
+                            window.location.href = "index.html?pageNum=" + pageNum;
+                        } else {
+                            alert("更新失败！" + vo.msg);
+                        }
+                    }
+                });
+            });
         });
     </script>
 </head>
 <body>
-<form action="index.html" method="post" class="definewidth m20">
+<form id="myForm" method="post" class="definewidth m20">
     <table class="table table-bordered table-hover definewidth m10">
         <tr>
             <td width="10%" class="tableleft">姓名</td>
@@ -207,7 +214,7 @@
         <tr>
             <td colspan="2">
                 <center>
-                    <button type="submit" class="btn btn-primary" type="button">保存</button> &nbsp;&nbsp;<button
+                    <button type="button" class="btn btn-primary" type="button" id="btnUpdate">保存</button> &nbsp;&nbsp;<button
                         type="button" class="btn btn-success" name="backid" id="backid">返回列表
                 </button>
                 </center>
