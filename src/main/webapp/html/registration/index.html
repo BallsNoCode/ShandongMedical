@@ -55,15 +55,19 @@
 
         function delAll() {
             var alls = document.getElementsByName("check");
+
             var ids = new Array();
             for (var i = 0; i < alls.length; i++) {
                 if (alls[i].checked) {
                     ids.push(alls[i].value);
                 }
             }
+
             if (ids.length > 0) {
                 if (confirm("确认操作?")) {
-                    alert("成功!");
+                    for (let i = 0; i < ids.length; i++) {
+                        quitHos(ids[i]);
+                    }
                 }
             } else {
                 alert("请选中要操作的项");
@@ -79,11 +83,12 @@
         }
         $(function () {
             let url = document.location.toString();
-            let pageNum=url.GetValue("pageNum");
+            let pageNum = url.GetValue("pageNum");
             loadData(pageNum);
         });
 
         function loadData(pageNum) {
+            let hosR_state = '';
             let data;
             if (pageNum !== null) {
                 data = $("#myForm").serialize();
@@ -104,33 +109,46 @@
                         let hosR_id = obj.hosR_id;
                         let d_name = obj.doctor.d_name;
                         let d_keshi = obj.doctor.d_keshi;
-                        let hosR_state = '';
                         let btnStr = '';
-                        if (obj.hosR_state !== 3) {
+                        if (obj.hosR_state === 0) {
                             btnStr = '<a onclick="look(' + hosR_id + ',' + vo.pageInfo.pageNum + ')" href="#">详情>>></a>&nbsp;&nbsp;&nbsp;<a href="#" onclick="update(' + hosR_id + ',' + vo.pageInfo.pageNum + ')">更改</a>&nbsp;&nbsp;&nbsp;<a\n' +
                                 '                href="javascript:void(0);" onclick="quitHos(' + hosR_id + ',' + vo.pageInfo.pageNum + ')">退号</a>'
-                        }
-                        if (obj.hosR_state === 0) {
                             hosR_state = "已挂号";
                         } else if (obj.hosR_state === 1) {
+                            btnStr = '<a onclick="look(' + hosR_id + ',' + vo.pageInfo.pageNum + ')" href="#">详情>>></a>&nbsp;&nbsp;&nbsp;<a href="#" onclick="update(' + hosR_id + ',' + vo.pageInfo.pageNum + ')">更改</a>&nbsp;&nbsp;&nbsp;'
                             hosR_state = "已住院";
                         } else if (obj.hosR_state === 2) {
+                            btnStr = '<a onclick="look(' + hosR_id + ',' + vo.pageInfo.pageNum + ')" href="#">详情>>></a>'
                             hosR_state = "已出院";
                         } else if (obj.hosR_state === 3) {
+                            btnStr = '<a onclick="look(' + hosR_id + ',' + vo.pageInfo.pageNum + ')" href="#">详情>>></a>'
                             hosR_state = "已退号";
                         }
                         let hosR_time = obj.hosR_time;
-                        str += '<tr>' +
-                            '            <td><input type="checkbox" name="check" value="1"></td>' +
-                            '            <td>' + hosR_id + '</td>' +
-                            '            <td>' + d_name + '</td>' +
-                            '            <td>' + hosR_time + '</td>' +
-                            '            <td>' + d_keshi + '</td>' +
-                            '            <td>' + hosR_state + '</td>' +
-                            '            <td>' + btnStr + '</td>' +
-                            '</tr>'
+                        if (hosR_state !== "已退号") {
+                            str += '<tr>' +
+                                '            <td><input type="checkbox" value="' + hosR_id + '" name="check"></td>' +
+                                '            <td>' + hosR_id + '</td>' +
+                                '            <td>' + d_name + '</td>' +
+                                '            <td>' + hosR_time + '</td>' +
+                                '            <td>' + d_keshi + '</td>' +
+                                '            <td>' + hosR_state + '</td>' +
+                                '            <td>' + btnStr + '</td>' +
+                                '</tr>'
+                        } else {
+                            str += '<tr>' +
+                                '            <td><input type="checkbox" value="'+ hosR_id +'" name="check" disabled="disabled"></td>' +
+                                '            <td>' + hosR_id + '</td>' +
+                                '            <td>' + d_name + '</td>' +
+                                '            <td>' + hosR_time + '</td>' +
+                                '            <td>' + d_keshi + '</td>' +
+                                '            <td>' + hosR_state + '</td>' +
+                                '            <td>' + btnStr + '</td>' +
+                                '</tr>'
+                        }
                     }
                     $("#tbody").html(str);
+
                     fillPageData(vo.pageInfo);
                 }
             });
@@ -145,33 +163,44 @@
         }
 
         function quitHos(hosR_id, pageNum) {
-            $.ajax({
-                type: "POST",
-                url: "/registration/" + hosR_id,
-                data: "_method=DELETE",
-                dataType: "json",
-                success: function (vo) {
-                    if (vo.code === 200) {
-                        alert("退号成功!");
-                        loadData(pageNum);
-                    } else {
-                        alert("退号失败！")
+            if (confirm("确认操作?")) {
+                $.ajax({
+                    type: "POST",
+                    url: "/registration/" + hosR_id,
+                    data: "_method=DELETE",
+                    dataType: "json",
+                    success: function (vo) {
+                        if (vo.code === 200) {
+                            alert("退号成功!");
+                            loadData(pageNum);
+                        } else {
+                            alert("退号失败！")
+                        }
                     }
-                }
-            });
+                });
+            }
+
         }
 
         function fillPageData(pageInfo) {
             let pageStr = '';
-            pageStr += '<a id="firstPage" href="javascript:void(0)" onclick="loadData(1)">第一页</a>\n' +
-                '                <a href="javascript:void(0)" onclick="loadData(' + pageInfo.prePage + ')">上一页</a>\n';
+            if (pageInfo.pageNum !== 1){
+                pageStr += '<a id="firstPage" href="javascript:void(0)" onclick="loadData(1)">第一页</a>\n' +
+                    '                <a href="javascript:void(0)" onclick="loadData(' + pageInfo.prePage + ')">上一页</a>\n';
+            }
+
+
             for (let i = 1; i <= pageInfo.pages; i++) {
                 pageStr += '                <a href="javascript:void(0)" onclick="loadData(' + i + ')">' + i + '</a>\n'
             }
+            if (pageInfo.pageNum !== pageInfo.navigateLastPage){
+                pageStr +=
+                    '                <a href="javascript:void(0)" onclick="loadData(' + pageInfo.nextPage + ')">下一页</a>\n' +
+                    '                <a href="javascript:void(0)" onclick="loadData(' + pageInfo.total + ')">最后一页</a>\n'
+            }
             pageStr +=
-                '                <a href="javascript:void(0)" onclick="loadData(' + pageInfo.nextPage + ')">下一页</a>\n' +
-                '                <a href="javascript:void(0)" onclick="loadData(' + pageInfo.total + ')">最后一页</a>\n' +
-                '                &nbsp;&nbsp;&nbsp;共<span class=\'current\' id="total"></span>条记录<span id="pages" class=\'current\'></span>页'
+                    '                &nbsp;&nbsp;&nbsp;共<span class=\'current\' id="total"></span>条记录<span id="pages" class=\'current\'></span>页'
+
             $("#page").html(pageStr);
             $("#total").html(pageInfo.total);
             $("#pages").html(pageInfo.pages);
@@ -210,7 +239,7 @@
 <table class="table table-bordered table-hover definewidth m10">
     <thead>
     <tr>
-        <th><input type="checkbox" id="checkall" onChange="checkall();"></th>
+        <th><input type="checkbox" id="checkall" value="aa" onChange="checkall();"></th>
         <th>门诊编号</th>
         <th>主治医生</th>
         <th>挂号时间</th>
