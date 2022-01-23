@@ -130,7 +130,7 @@
                             '            <td>' + btnStr + '</td>' +
                             '</tr>'
                     }
-                    $("#tboby").html(str);
+                    $("#tbody").html(str);
                     fillPageData(vo.pageInfo);
                 }
             });
@@ -200,7 +200,7 @@
                 <input type="date" name="beginDate" value=""/>&nbsp;至&nbsp;<input type="date" name="endDate" value=""/>
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <button type="button" class="btn btn-primary" type="button" onclick="loadData()">查询</button>
-                <button type="reset" class="btn btn-primary" type="button">清空</button>
+                <button type="reset" class="btn btn-primary" type="button" onclick="loadData()">清空</button>
 
             </td>
         </tr>
@@ -219,7 +219,7 @@
         <th>操作</th>
     </tr>
     </thead>
-    <tbody id="tboby">
+    <tbody id="tbody">
     </tbody>
 </table>
 

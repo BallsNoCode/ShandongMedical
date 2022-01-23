@@ -1,5 +1,8 @@
 package com.kkb.pojo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.util.Date;
 
 public class Doctor {
@@ -15,6 +18,8 @@ public class Doctor {
 
     private Integer d_sex;
 
+    @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
+    @DateTimeFormat(pattern = "yyyy-HH-dd")
     private Date d_birthday;
 
     private Integer d_age;
@@ -27,7 +32,29 @@ public class Doctor {
 
     private String d_desc;
 
+    @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
+    @DateTimeFormat(pattern = "yyyy-HH-dd")
     private Date d_inTime;
+
+    @Override
+    public String toString() {
+        return "Doctor{" +
+                "d_id=" + d_id +
+                ", d_idCar='" + d_idCar + '\'' +
+                ", d_name='" + d_name + '\'' +
+                ", d_phone='" + d_phone + '\'' +
+                ", d_telPhone='" + d_telPhone + '\'' +
+                ", d_sex=" + d_sex +
+                ", d_birthday=" + d_birthday +
+                ", d_age=" + d_age +
+                ", d_email='" + d_email + '\'' +
+                ", d_keshi='" + d_keshi + '\'' +
+                ", d_xueli='" + d_xueli + '\'' +
+                ", d_desc='" + d_desc + '\'' +
+                ", d_inTime=" + d_inTime +
+                ", d_state=" + d_state +
+                '}';
+    }
 
     private Integer d_state;
 

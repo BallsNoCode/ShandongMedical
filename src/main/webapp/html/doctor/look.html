@@ -12,7 +12,7 @@
     <script type="text/javascript" src="../Js/ckform.js"></script>
     <script type="text/javascript" src="../Js/common.js"></script>
     <script type="text/javascript" src="../Js/ckeditor/ckeditor.js"></script>
- 
+
 
     <style type="text/css">
         body {
@@ -34,69 +34,109 @@
 
     </style>
     <script type="text/javascript">
-    $(function () {       
-		$('#backid').click(function(){
-				window.location.href="index.html";
-		 });
-    });
+        $(function () {
+            String.prototype.GetValue = function (para) {
+                let reg = new RegExp("(^|&)" + para + "=([^&]*)(&|$)");
+                let r = this.substr(this.indexOf("\?") + 1).match(reg);
+                if (r != null) return decodeURI(r[2]);
+                return null;
+            }
+            let url = document.location.toString();
+            let pageNum=url.GetValue("pageNum");
+            loadData();
+            $('#backid').click(function () {
+                window.location.href = "index.html?pageNum=" + pageNum;
+            });
+
+            function loadData() {
+                let d_id = document.location.toString().GetValue("d_id");
+                $.ajax({
+                    type: "GET",
+                    url: "/doctor/"+d_id,
+                    data: {
+                        d_id : d_id
+                    },
+                    dataType: "json",
+                    success: function (vo) {
+                        let str = "";
+                        let d_name = vo.obj.d_name;
+                        let d_idCar = vo.obj.d_idCar;
+                        let d_phone = vo.obj.d_phone;
+                        let d_telPhone = vo.obj.d_telPhone;
+                        let d_sex = vo.obj.d_sex === 0 ? "男" : "女";
+                        let d_age = vo.obj.d_age;
+                        let d_birthday = vo.obj.d_birthday;
+                        let d_email = vo.obj.d_email;
+                        let d_keshi = vo.obj.d_keshi;
+                        let d_xueli = vo.obj.d_xueli;
+                        let d_desc = vo.obj.d_desc == null ? "无" : vo.obj.d_desc;
+
+                        str += '<tr>' +
+                            '       <td width="10%" className="tableleft">姓名</td>' +
+                            '       <td>' + d_name + '</td>' +
+                            '</tr>' +
+                            '<tr>' +
+                            '       <td width="10%" className="tableleft">证件类型</td>' +
+                            '       <td>身份证</td>' +
+                            '</tr>' +
+                            '<tr>' +
+                            '       <td width="10%" className="tableleft">证件号</td>' +
+                            '       <td>' + d_idCar + '</td>' +
+                            '</tr>' +
+                            '<tr>' +
+                            '       <td width="10%" className="tableleft">手机</td>' +
+                            '       <td>' + d_phone + '</td>' +
+                            '</tr>' +
+                            '<tr>' +
+                            '       <td width="10%" className="tableleft">座机</td>' +
+                            '       <td>' + d_telPhone + '</td>' +
+                            '</tr>' +
+                            '<tr>' +
+                            '       <td width="10%" className="tableleft">性别</td>' +
+                            '       <td>' + d_sex + '</td>' +
+                            '</tr>' +
+                            '<tr>' +
+                            '       <td width="10%" className="tableleft">年龄</td>' +
+                            '       <td>' + d_age + '</td>' +
+                            '</tr>' +
+                            '<tr>' +
+                            '       <td width="10%" className="tableleft">出生年月</td>' +
+                            '       <td>' + d_birthday + '</td>' +
+                            '</tr>' +
+                            '<tr>' +
+                            '       <td width="10%" className="tableleft">电子邮箱</td>' +
+                            '       <td>' + d_email + '</td>' +
+                            '</tr>' +
+                            '<tr>' +
+                            '       <td width="10%" className="tableleft">所属科室</td>' +
+                            '       <td>' + d_keshi + '</td>' +
+                            '</tr>' +
+                            '<tr>' +
+                            '       <td width="10%" className="tableleft">学历</td>' +
+                            '       <td>' + d_xueli + '</td>' +
+                            '</tr>' +
+                            '<tr>' +
+                            '       <td width="10%" className="tableleft">备注</td>' +
+                            '       <td>' + d_desc + '</td>' +
+                            '</tr>'
+                        $("#tbody").html(str);
+                    }
+                });
+            }
+        });
+
+
     </script>
 </head>
 <body>
 <form action="index.html" method="post" class="definewidth m20">
 <table class="table table-bordered table-hover definewidth m10">
-    <tr>
-        <td width="10%" class="tableleft">姓名</td>
-        <td>程俊</td>
-    </tr>
-    <tr>
-        <td width="10%" class="tableleft">证件类型</td>
-        <td>护照</td>
-    </tr>
-    <tr>
-        <td width="10%" class="tableleft">证件号</td>
-        <td>534534534</td>
-    </tr>
-    <tr>
-        <td width="10%" class="tableleft">手机</td>
-        <td>13124345432</td>
-    </tr>
-    <tr>
-        <td width="10%" class="tableleft">座机</td>
-        <td>01068765432</td>
-    </tr>
-    <tr>
-        <td width="10%" class="tableleft">性别</td>
-        <td>男</td>
-    </tr>
-    <tr>
-        <td width="10%" class="tableleft">年龄</td>
-        <td>28</td>
-    </tr>
-    <tr>
-        <td width="10%" class="tableleft">出生年月</td>
-        <td>1981-09-04</td>
-    </tr>
-    <tr>
-        <td width="10%" class="tableleft">电子邮箱</td>
-        <td>chengjun@msn.com.cn</td>
-    </tr>
-    <tr>
-        <td width="10%" class="tableleft">所属科室</td>
-        <td>急诊科</td>
-    </tr>
-    <tr>
-        <td width="10%" class="tableleft">学历</td>
-        <td>本科</td>
-    </tr>
-	<tr>
-        <td width="10%" class="tableleft">备注</td>
-        <td>工作热情积极表现非常的优异</td>
-	</tr>
+    <tbody id="tbody"></tbody>
     <tr>
         <td colspan="2">
 			<center>
 				<button type="button" class="btn btn-success" name="backid" id="backid">返回列表</button>
-			</center
+			</center>
 		</td>
     </tr>
 </table>

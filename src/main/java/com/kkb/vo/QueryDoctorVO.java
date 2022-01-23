@@ -8,6 +8,15 @@ public class QueryDoctorVO {
     private String d_name;
     private String d_keshi;
 
+    @Override
+    public String toString() {
+        return "QueryDoctorVO{" +
+                "d_id=" + d_id +
+                ", d_name='" + d_name + '\'' +
+                ", d_keshi='" + d_keshi + '\'' +
+                '}';
+    }
+
     public Integer getD_id() {
         return d_id;
     }

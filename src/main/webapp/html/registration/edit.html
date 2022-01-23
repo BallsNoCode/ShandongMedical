@@ -135,6 +135,7 @@
                     dataType: "json",
                     success: function (vo) {
                         if (vo.code === 200) {
+                            alert("更新成功！");
                             window.location.href = "index.html?pageNum=" + pageNum;
                         } else {
                             alert("更新失败！" + vo.msg);
