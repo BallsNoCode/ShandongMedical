@@ -36,8 +36,8 @@
     </style>
     <script type="text/javascript">
         $(function () {
-            alert($("#myForm").serialize());
             selectkeshi();
+            let flag = false;
             $('#backid').click(function () {
                 window.location.href = "index.html";
             });
@@ -63,12 +63,62 @@
                 })
             }
 
+            $("input[name='hosR_name']").blur(function () {
+                if ($("input[name='hosR_name']").val() === "") {
+                    alert("姓名不能为空！");
+                } else {
+                    flag = true;
+                }
+            });
+
+            $("input[name='hosR_medical']").blur(function () {
+                if ($("input[name='hosR_medical']").val() === "") {
+                    alert("社保号不能为空！");
+                } else {
+                    flag = true;
+                }
+            });
+
+            $("input[name='hosR_idCard']").blur(function () {
+                let idCard = $("input[name='hosR_idCard']").val();
+
+                let test = /^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$|^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$/
+                if (!test.test(idCard)) {
+                    alert("请输入正确的身份证号码！");
+                } else {
+                    flag = true;
+                    let birthday = "";
+                    if (idCard.length === 15) {
+                        birthday = "19" + idCard.substr(6, 6);
+                    } else if (idCard.length === 18) {
+                        birthday = idCard.substr(6, 8);
+                    }
+
+                    if (!parseInt(idCard.substr(16, 1)) % 2 === 1) {
+                        $("input[type=radio][name=hosR_sex]").attr("checked", true);
+                    }
+
+                    var now_year = new Date().getFullYear();
+                    var year = birthday.substr(0, 4);
+                    $("input[name='hosR_age']").val(now_year - year);
+                }
+            });
+            $("input[name='hosR_phone']").blur(function () {
+                let test = /^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$/
+                if (!test.test($("input[name='hosR_phone']").val())) {
+                    alert("请输入正确的手机号码！");
+                } else {
+                    flag = true;
+                }
+            });
+
+
             function selectdoctor(d_keshi) {
                 $("#doctor").html("");
                 for (let i = 0; i < list.length; i++) {
                     let obj = list[i];
                     if (obj.d_keshi === d_keshi) {
-                        $("#doctor").append("<option value='"+obj.d_id+"'>" + obj.d_name + "</option>");
+                        $("#doctor").append("<option value='" + obj.d_id + "'>" + obj.d_name + "</option>");
                     }
 
                 }
@@ -78,20 +128,23 @@
                 selectdoctor($("#keshi").val());
             });
             $("#btnAdd").click(function () {
-                $.ajax({
-                    type: "POST",
-                    url: "/registration/insert",
-                    data: $("#myForm").serialize(),
-                    dataType: "json",
-                    success: function (vo) {
-                        if (vo.code === 200) {
-                            alert("添加成功！");
-                            window.location.href = "index.html";
-                        } else {
-                            alert("添加失败！" + vo.msg);
+                if (flag) {
+                    $.ajax({
+                        type: "POST",
+                        url: "/registration/insert",
+                        data: $("#myForm").serialize(),
+                        dataType: "json",
+                        success: function (vo) {
+                            if (vo.code === 200) {
+                                alert("添加成功！");
+                                window.location.href = "index.html";
+                            } else {
+                                alert("添加失败！" + vo.msg);
+                            }
                         }
-                    }
-                });
+                    });
+                }
+
             });
         });
     </script>
