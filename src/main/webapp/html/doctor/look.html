@@ -34,13 +34,13 @@
 
     </style>
     <script type="text/javascript">
+        String.prototype.GetValue = function (para) {
+            let reg = new RegExp("(^|&)" + para + "=([^&]*)(&|$)");
+            let r = this.substr(this.indexOf("\?") + 1).match(reg);
+            if (r != null) return decodeURI(r[2]);
+            return null;
+        }
         $(function () {
-            String.prototype.GetValue = function (para) {
-                let reg = new RegExp("(^|&)" + para + "=([^&]*)(&|$)");
-                let r = this.substr(this.indexOf("\?") + 1).match(reg);
-                if (r != null) return decodeURI(r[2]);
-                return null;
-            }
             let url = document.location.toString();
             let pageNum=url.GetValue("pageNum");
             loadData();

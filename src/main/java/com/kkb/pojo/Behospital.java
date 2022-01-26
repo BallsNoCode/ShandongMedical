@@ -17,6 +17,16 @@ public class Behospital {
 
     private Integer beH_state;
 
+    private Hosregister hosregister;
+
+    public Hosregister getHosregister() {
+        return hosregister;
+    }
+
+    public void setHosregister(Hosregister hosregister) {
+        this.hosregister = hosregister;
+    }
+
     public Integer getBeH_id() {
         return beH_id;
     }

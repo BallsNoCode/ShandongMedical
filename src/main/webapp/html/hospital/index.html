@@ -3,9 +3,9 @@
 <head>
     <title>入院办理--中软高科-2015</title>
     <meta charset="UTF-8">
-    <link rel="stylesheet" type="text/css" href="../Css/bootstrap.css" />
-    <link rel="stylesheet" type="text/css" href="../Css/bootstrap-responsive.css" />
-    <link rel="stylesheet" type="text/css" href="../Css/style.css" />
+    <link rel="stylesheet" type="text/css" href="../Css/bootstrap.css"/>
+    <link rel="stylesheet" type="text/css" href="../Css/bootstrap-responsive.css"/>
+    <link rel="stylesheet" type="text/css" href="../Css/style.css"/>
     <script type="text/javascript" src="../Js/jquery.js"></script>
     <script type="text/javascript" src="../Js/jquery.sorted.js"></script>
     <script type="text/javascript" src="../Js/bootstrap.js"></script>
@@ -16,6 +16,7 @@
         body {
             padding-bottom: 40px;
         }
+
         .sidebar-nav {
             padding: 9px 0;
         }
@@ -32,76 +33,178 @@
 
     </style>
     <script type="text/javascript">
-	 $(function () {
-		$('#newNav').click(function(){
-				window.location.href="add.html";
-		 });
-    });
-	
-    	function checkall(){
-			var alls=document.getElementsByName("check");
-			var ch=document.getElementById("checkall");
-			if(ch.checked){
-				for(var i=0;i<alls.length;i++){
-					alls[i].checked=true;	
-				}	
-			}else{
-				for(var i=0;i<alls.length;i++){
-					alls[i].checked=false;	
-				}	
-			}
-		}
-		function delAll(){
-			var alls=document.getElementsByName("check");
-			var ids=new Array();
-			for(var i=0;i<alls.length;i++){
-				if(alls[i].checked){
-					ids.push(alls[i].value);
-				}		
-			}
-			if(ids.length>0){
-				if(confirm("确认操作?")){
-					alert("成功!");
-				}
-			}else{
-				alert("请选中要操作的项");
-			}
-		}
+        String.prototype.GetValue = function (para) {
+            let reg = new RegExp("(^|&)" + para + "=([^&]*)(&|$)");
+            let r = this.substr(this.indexOf("\?") + 1).match(reg);
+            if (r != null) return decodeURI(r[2]);
+            return null;
+        }
+        $(function () {
+            $('#newNav').click(function () {
+                window.location.href = "add.html";
+            });
+            let url = document.location.toString();
+            let pageNum = url.GetValue("pageNum");
+            loadData(pageNum);
+
+        });
+
+        function loadData(pageNum) {
+            let data = '';
+            if (pageNum !== null && pageNum !== 'null' && pageNum !== undefined) {
+                data = $("#myForm").serialize() + "&pageNum=" + pageNum;
+            } else {
+                data = $("#myForm").serialize()
+            }
+            $.ajax({
+                type: "GET",
+                url: "/beHos/info",
+                data: data,
+                dataType: "json",
+                success: function (vo) {
+                    let list = vo.pageInfo.list;
+                    let str = "";
+                    for (let i = 0; i < list.length; i++) {
+                        let obj = list[i];
+                        let hos = obj.hosregister;
+                        let doc = hos.doctor;
+                        let beHos_id = obj.beH_id;
+                        let name = hos.hosR_name;
+                        let beH_patBed = obj.beH_patBed;
+                        let phone = hos.hosR_phone;
+                        let beH_antecedent = obj.beH_antecedent;
+                        let doctor = doc.d_name;
+                        let inTime = hos.hosR_time;
+                        let keshi = doc.d_keshi;
+                        let state = obj.beH_state === 0 ? "已住院" : "已出院";
+                        let closePrice = obj.beH_closePrice === 0 ? "未结算" : "已结算";
+                        if (state === "已住院") {
+                            if (closePrice === "已结算") {
+                                state = "已结算";
+                                btnStr = '<a href="#" onclick="look(' + beHos_id + ',' + pageNum + ')">详情>>></a>&nbsp;&nbsp;&nbsp;<a href="#">出院</a>&nbsp;&nbsp;&nbsp;<a href="#">退院</a>'
+                            } else {
+                                btnStr = '<a href="#" onclick="look(' + beHos_id + ',' + pageNum + ')">详情>>></a>&nbsp;&nbsp;&nbsp;<a href="#" onclick="update(' + beHos_id + ',' + pageNum + ')">更改</a>'
+                            }
+                        } else {
+                            btnStr = '<a href="#" onclick="look(' + beHos_id + ',' + pageNum + ')">详情>>></a>';
+                        }
+                        str += '<tr>' +
+                            '            <td><input type="checkbox" name="check" value="1"></td>' +
+                            '            <td>' + beHos_id + '</td>' +
+                            '            <td>' + name + '</td>' +
+                            '            <td>' + beH_patBed + '</td>' +
+                            '            <td>' + phone + '</td>' +
+                            '            <td>' + beH_antecedent + '</td>' +
+                            '            <td>' + doctor + '</td>' +
+                            '            <td>' + inTime + '</td>' +
+                            '            <td>' + keshi + '</td>' +
+                            '            <td>' + state + '</td>' +
+                            '            <td>' + btnStr + '</td>' +
+                            '</tr>'
+                    }
+                    $("#tbody").html(str);
+                    fillPageData(vo.pageInfo);
+                }
+            });
+        }
+
+        function look(beH_id, pageNum) {
+            window.location.href = "look.html?beH_id=" + beH_id + "&pageNum=" + pageNum;
+        }
+
+        function update(beH_id, pageNum) {
+            window.location.href = "edit.html?beH_id=" + beH_id + "&pageNum=" + pageNum;
+        }
+
+        function fillPageData(pageInfo) {
+            let pageStr = '';
+            if (pageInfo.pageNum !== 1){
+                pageStr += '<a id="firstPage" href="javascript:void(0)" onclick="loadData(1)">第一页</a>\n' +
+                    '                <a href="javascript:void(0)" onclick="loadData(' + pageInfo.prePage + ')">上一页</a>\n';
+            }
+
+
+            for (let i = 1; i <= pageInfo.pages; i++) {
+                pageStr += '                <a href="javascript:void(0)" onclick="loadData(' + i + ')">' + i + '</a>\n'
+            }
+            if (pageInfo.pageNum !== pageInfo.navigateLastPage){
+                pageStr +=
+                    '                <a href="javascript:void(0)" onclick="loadData(' + pageInfo.nextPage + ')">下一页</a>\n' +
+                    '                <a href="javascript:void(0)" onclick="loadData(' + pageInfo.total + ')">最后一页</a>\n'
+            }
+            pageStr +=
+                '                &nbsp;&nbsp;&nbsp;共<span class=\'current\' id="total"></span>条记录<span id="pages" class=\'current\'></span>页'
+
+            $("#page").html(pageStr);
+            $("#total").html(pageInfo.total);
+            $("#pages").html(pageInfo.pages);
+        }
+
+        function checkall() {
+            var alls = document.getElementsByName("check");
+            var ch = document.getElementById("checkall");
+            if (ch.checked) {
+                for (var i = 0; i < alls.length; i++) {
+                    alls[i].checked = true;
+                }
+            } else {
+                for (var i = 0; i < alls.length; i++) {
+                    alls[i].checked = false;
+                }
+            }
+        }
+
+        function delAll() {
+            var alls = document.getElementsByName("check");
+            var ids = new Array();
+            for (var i = 0; i < alls.length; i++) {
+                if (alls[i].checked) {
+                    ids.push(alls[i].value);
+                }
+            }
+            if (ids.length > 0) {
+                if (confirm("确认操作?")) {
+                    alert("成功!");
+                }
+            } else {
+                alert("请选中要操作的项");
+            }
+        }
     </script>
 </head>
 <body>
 
-<form action="index.html" method="post" class="definewidth m20">
-<table class="table table-bordered table-hover definewidth m10">
-    <tr>
-        <td width="10%" class="tableleft">病例号：</td>
-        <td><input type="text" name="pname" value=""/></td>
-		
-        <td width="10%" class="tableleft">主治医生：</td>
-        <td><input type="text" name="pname" value=""/></td>
-		
-        <td width="10%" class="tableleft">科室：</td>
-        <td><input type="text" name="pname" value=""/></td>
-    </tr>
-    <tr>
-		
-        <td width="10%" class="tableleft">住院时间：</td>
-		
-		  <td colspan="5">
-			<input type="text" name="pname" value=""/>&nbsp;至&nbsp;<input type="text" name="pname" value=""/>
-			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <button type="submit" class="btn btn-primary" type="button">查询</button> 
-            <button type="submit" class="btn btn-primary" type="button">清空</button> 
-			
-        </td>
-    </tr>
-</table>
+<form id="myForm" method="post" class="definewidth m20">
+    <table class="table table-bordered table-hover definewidth m10">
+        <tr>
+            <td width="10%" class="tableleft">病例号：</td>
+            <td><input type="text" name="pname" value=""/></td>
+
+            <td width="10%" class="tableleft">主治医生：</td>
+            <td><input type="text" name="pname" value=""/></td>
+
+            <td width="10%" class="tableleft">科室：</td>
+            <td><input type="text" name="pname" value=""/></td>
+        </tr>
+        <tr>
+
+            <td width="10%" class="tableleft">住院时间：</td>
+
+            <td colspan="5">
+                <input type="text" name="pname" value=""/>&nbsp;至&nbsp;<input type="text" name="pname" value=""/>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <button type="button" class="btn btn-primary" type="button">查询</button>
+                <button type="button" class="btn btn-primary" type="button">清空</button>
+
+            </td>
+        </tr>
+    </table>
 </form>
-   
-<table class="table table-bordered table-hover definewidth m10" >
-   <thead>
+
+<table class="table table-bordered table-hover definewidth m10">
+    <thead>
     <tr>
-    	<th><input type="checkbox" id="checkall" onChange="checkall();"></th>
+        <th><input type="checkbox" id="checkall" onChange="checkall();"></th>
         <th>病历号</th>
         <th>姓名</th>
         <th>床位号</th>
@@ -114,88 +217,34 @@
         <th>操作</th>
     </tr>
     </thead>
-	     <tr >
-         	<td style="vertical-align:middle;"><input type="checkbox" name="check" value="1"></td>
-            <td style="vertical-align:middle;">1103</td>
-            <td style="vertical-align:middle;">黄飞鸿</td>
-            <td style="vertical-align:middle;">4343</td>
-            <td style="vertical-align:middle;">13127653423</td>
-            <td style="vertical-align:middle;">2000元</td>
-            <td style="vertical-align:middle;">程俊</td>
-            <td style="vertical-align:middle;">2015-01-05 12:33:56</td>
-            <td style="vertical-align:middle;">血液科</td>
-            <td style="vertical-align:middle;">已住院</td>
-            <td style="vertical-align:middle;">
-				<a href="look.html">详情>></a>&nbsp;&nbsp;&nbsp;
-				<a href="edit.html">更改</a>&nbsp;&nbsp;&nbsp;
-				<a href="add_many.html">缴纳押金</a>&nbsp;&nbsp;&nbsp;				
-				
-				
-			</td>
-        </tr>
-	     <tr >
-         	<td style="vertical-align:middle;"><input type="checkbox" name="check" value="1"></td>
-            <td style="vertical-align:middle;">1103</td>
-            <td style="vertical-align:middle;">黄飞鸿</td>
-            <td style="vertical-align:middle;">4343</td>
-            <td style="vertical-align:middle;">13127653423</td>
-            <td style="vertical-align:middle;">2000元</td>
-            <td style="vertical-align:middle;">程俊</td>
-            <td style="vertical-align:middle;">2015-01-05 12:33:56</td>
-            <td style="vertical-align:middle;">血液科</td>
-            <td style="vertical-align:middle;">已退院</td>
-            <td style="vertical-align:middle;">
-				<a href="look.html">详情>></a>&nbsp;&nbsp;&nbsp;
-			</td>
-        </tr>
-	     <tr >
-         	<td style="vertical-align:middle;"><input type="checkbox" name="check" value="1"></td>
-            <td style="vertical-align:middle;">1103</td>
-            <td style="vertical-align:middle;">黄飞鸿</td>
-            <td style="vertical-align:middle;">4343</td>
-            <td style="vertical-align:middle;">13127653423</td>
-            <td style="vertical-align:middle;">2000元</td>
-            <td style="vertical-align:middle;">程俊</td>
-            <td style="vertical-align:middle;">2015-01-05 12:33:56</td>
-            <td style="vertical-align:middle;">血液科</td>
-            <td style="vertical-align:middle;">已结算</td>
-            <td style="vertical-align:middle;">
-				<a href="look.html">详情>></a>&nbsp;&nbsp;&nbsp;				
-				<a href="javascript:alert('退院成功！');">退院</a>&nbsp;&nbsp;&nbsp;
-				<a href="javascript:alert('出院成功！');">出院</a>
-			</td>
-        </tr>
-	     <tr >
-         	<td style="vertical-align:middle;"><input type="checkbox" name="check" value="1"></td>
-            <td style="vertical-align:middle;">1103</td>
-            <td style="vertical-align:middle;">黄飞鸿</td>
-            <td style="vertical-align:middle;">4343</td>
-            <td style="vertical-align:middle;">13127653423</td>
-            <td style="vertical-align:middle;">2000元</td>
-            <td style="vertical-align:middle;">程俊</td>
-            <td style="vertical-align:middle;">2015-01-05 12:33:56</td>
-            <td style="vertical-align:middle;">血液科</td>
-            <td style="vertical-align:middle;">已出院</td>
-            <td style="vertical-align:middle;">
-				<a href="look.html">详情>></a>&nbsp;&nbsp;&nbsp;
+    <tr>
+        <tbody id="tbody">
+        </tbody>
+    </tr>
 
-			</td>
-        </tr>
-  </table>
-  
-  <table class="table table-bordered table-hover definewidth m10" >
-  	<tr><th colspan="5">  <div class="inline pull-right page">
-          <a href='#' >第一页</a> <a href='#'>上一页</a>     <span class='current'>1</span><a href='#'>2</a><a href='/chinapost/index.php?m=Label&a=index&p=3'>3</a><a href='#'>4</a><a href='#'>5</a>  <a href='#' >下一页</a> <a href='#' >最后一页</a>
-		  &nbsp;&nbsp;&nbsp;共<span class='current'>32</span>条记录<span class='current'> 1/33 </span>页
-		  </div>
-		 <div><button type="button" class="btn btn-success" id="newNav">添加住院信息</button>&nbsp;&nbsp;&nbsp;
-		 <button type="button" class="btn btn-success" id="delPro" onClick="delAll();">出院</button>&nbsp;&nbsp;&nbsp;
-		 <button type="button" class="btn btn-success" id="delPro" onClick="delAll();">退院</button>&nbsp;&nbsp;&nbsp;
-		 <button type="button" class="btn btn-success" id="delPro">导出Excel</button>
-		 </div>
-		 
-		 </th></tr>
-  </table>
-  
+</table>
+
+<table class="table table-bordered table-hover definewidth m10">
+    <tr>
+        <th colspan="5">
+            <div class="inline pull-right page" id="page">
+                <a href="javascript:void(0)">第一页</a>
+                <a href="javascript:void(0)">上一页</a>
+                <a href="javascript:void(0)">1</a>
+                <a href="javascript:void(0)">下一页</a>
+                <a href="javascript:void(0)">最后一页</a>
+                &nbsp;&nbsp;&nbsp;共<span class='current' id="total"></span>条记录<span id="pages" class='current'></span>页
+            </div>
+            <div>
+                <button type="button" class="btn btn-success" id="newNav">添加住院信息</button>&nbsp;&nbsp;&nbsp;
+                <button type="button" class="btn btn-success" onClick="delAll();">出院</button>&nbsp;&nbsp;&nbsp;
+                <button type="button" class="btn btn-success" onClick="delAll();">退院</button>&nbsp;&nbsp;&nbsp;
+                <button type="button" class="btn btn-success">导出Excel</button>
+            </div>
+
+        </th>
+    </tr>
+</table>
+
 </body>
 </html>
