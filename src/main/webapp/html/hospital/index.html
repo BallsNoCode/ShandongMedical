@@ -178,23 +178,23 @@
     <table class="table table-bordered table-hover definewidth m10">
         <tr>
             <td width="10%" class="tableleft">病例号：</td>
-            <td><input type="text" name="pname" value=""/></td>
+            <td><input type="text" name="hosR_id" value=""/></td>
 
             <td width="10%" class="tableleft">主治医生：</td>
-            <td><input type="text" name="pname" value=""/></td>
+            <td><input type="text" name="d_name" value=""/></td>
 
             <td width="10%" class="tableleft">科室：</td>
-            <td><input type="text" name="pname" value=""/></td>
+            <td><input type="text" name="d_keshi" value=""/></td>
         </tr>
         <tr>
 
             <td width="10%" class="tableleft">住院时间：</td>
 
             <td colspan="5">
-                <input type="text" name="pname" value=""/>&nbsp;至&nbsp;<input type="text" name="pname" value=""/>
+                <input type="date" name="beginDate" value=""/>&nbsp;至&nbsp;<input type="date" name="endDate" value=""/>
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <button type="button" class="btn btn-primary" type="button">查询</button>
-                <button type="button" class="btn btn-primary" type="button">清空</button>
+                <button class="btn btn-primary" type="button" onclick="loadData()">查询</button>
+                <button class="btn btn-primary" type="reset" onclick="loadData()">清空</button>
 
             </td>
         </tr>
