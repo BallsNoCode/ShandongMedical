@@ -72,11 +72,11 @@
                     let sex = hos.hosR_sex === 0 ? "男" : "女";
                     let age = hos.hosR_age;
                     let work = hos.hosR_work;
-                    let lookdoctor = hos.hosR_lookDoctor;
+                    let lookdoctor = hos.hosR_lookDoctor === 0 ? "初诊" : "复诊";
                     let keshi = doc.d_keshi;
                     let d_name = doc.d_name;
                     let beH_antecedent = obj.beH_antecedent;
-                    let remark = hos.hosR_remark;
+                    let remark = hos.hosR_remark === null ? "无" : hos.hosR_remark;
 
                     str += '<tr>' +
                         '       <td width="10%" className="tableleft">姓名</td>' +

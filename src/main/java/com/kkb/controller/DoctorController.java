@@ -47,7 +47,6 @@ public class DoctorController {
 
     @RequestMapping(value = "{id}", method = RequestMethod.PUT)
     public ResultVO<Doctor> update(@PathVariable("id") Integer d_id, Doctor doctor) {
-        System.out.println(doctor);
         doctor.setD_id(d_id);
         Integer integer = doctorService.updateDoc(doctor);
         if (integer == 1) {

@@ -42,54 +42,115 @@
             return null;
         }
         $(function () {
+            let list = '';
             let url = document.location.toString();
             let pageNum = url.GetValue("pageNum");
             let beH_id = url.GetValue("beH_id");
+            selectkeshi();
             queryById(beH_id);
             $('#backid').click(function () {
                 window.location.href = "index.html?pageNum=" + pageNum;
             });
-        });
-        function queryById(beH_id) {
-            $.ajax({
-                type: "GET",
-                url: "/beHos/" + beH_id,
-                data: "",
-                success: function (vo) {
-                    let obj = vo.obj;
-                    let hos = obj.hosregister;
-                    let doc = hos.doctor;
-                    let name = hos.hosR_name;
-                    let idCar = hos.hosR_idCard;
-                    let medical = hos.hosR_medical;
-                    let phone = hos.hosR_phone;
-                    let selfPrice = hos.hosR_selfPrice === 0 ? "是" : "否";
-                    let sex = hos.hosR_sex === 0 ? "男" : "女";
-                    let age = hos.hosR_age;
-                    let work = hos.hosR_work;
-                    let lookdoctor = hos.hosR_lookDoctor;
-                    let keshi = doc.d_keshi;
-                    let d_name = doc.d_name;
-                    let beH_antecedent = obj.beH_antecedent;
-                    let beH_nursePeoPle = obj.beH_nursePeoPle;
-                    let beH_illness = obj.beH_illness === null ? "无" : obj.beH_illness;
-                    let patBed = obj.beH_patBed;
-                    let remark = hos.hosR_remark;
-                    $("#id").html(beH_id);
-                    $("#name").html(name);
-                    $("#idCard").html(idCar);
-                    $("#medicald").html(medical);
-                    $("#phone").html(phone);
-                    $("#age").html(age);
-                    $("input[name='nurse']").val(beH_nursePeoPle);
-                    $("input[name='patBed']").val(patBed);
-                    $("#illness").val(beH_illness);
-                    $("#remark").val(remark);
+            function selectkeshi() {
+                $.ajax({
+                    type: "GET",
+                    url: "/doctor/info",
+                    data: {
+                        pageSize : 100
+                    },
+                    success: function (vo) {
+                        list = vo.pageInfo.list;
+                        A:for (let i = 0; i < list.length; i++) {
+                            let obj = list[i];
+                            for (let j = 0; j < i; j++) {
+                                if (list[i].d_keshi === list[j].d_keshi) {
+                                    continue A;
+                                }
+                            }
+                            $("#keshi").append("<option value='" + obj.d_keshi + "'>" + obj.d_keshi + "</option>");
+                        }
 
-                }
+                    }
+                })
+            }
+
+            $("#keshi").blur(function () {
+                selectdoctor($("#keshi").val());
             });
 
-        }
+            function selectdoctor(d_keshi) {
+                $("#doctor").html("");
+                for (let i = 0; i < list.length; i++) {
+                    let obj = list[i];
+                    if (obj.d_keshi === d_keshi) {
+                        $("#doctor").append("<option value='"+obj.d_id+"'>" + obj.d_name + "</option>");
+                    }
+
+                }
+            }
+
+            $("#btnUpdate").click(function () {
+                $.ajax({
+                    type: "POST",
+                    url: "/beHos/" + beH_id,
+                    data: $("#myForm").serialize() + "&_method=PUT",
+                    dataType: "json",
+                    success: function (vo) {
+                        if (vo.code === 200) {
+                            alert("更新成功！");
+                            window.location.href = "index.html?pageNum=" + pageNum;
+                        } else {
+                            alert("更新失败！" + vo.msg);
+                        }
+                    }
+                });
+            });
+            function queryById(beH_id) {
+                $.ajax({
+                    type: "GET",
+                    url: "/beHos/" + beH_id,
+                    data: "",
+                    success: function (vo) {
+                        let obj = vo.obj;
+                        let hos = obj.hosregister;
+                        let doc = hos.doctor;
+                        let name = hos.hosR_name;
+                        let idCar = hos.hosR_idCard;
+                        let medical = hos.hosR_medical;
+                        let phone = hos.hosR_phone;
+                        let selfPrice = hos.hosR_selfPrice === 0 ? "是" : "否";
+                        let sex = hos.hosR_sex === 0 ? "男" : "女";
+                        let age = hos.hosR_age;
+                        let work = hos.hosR_work;
+                        let lookdoctor = hos.hosR_lookDoctor;
+                        let keshi = doc.d_keshi;
+                        let d_name = doc.d_name;
+                        let beH_antecedent = obj.beH_antecedent;
+                        let beH_nursePeoPle = obj.beH_nursePeoPle;
+                        let beH_illness = obj.beH_illness === null ? "无" : obj.beH_illness;
+                        let patBed = obj.beH_patBed;
+                        let remark = hos.hosR_remark;
+                        $("#id").html(beH_id);
+                        $("#name").html(name);
+                        $("#idCard").html(idCar);
+                        $("#medicald").html(medical);
+                        $("#phone").html(phone);
+                        $("#age").html(age);
+                        $("input[name='beH_nursePeoPle']").val(beH_nursePeoPle);
+                        $("input[name='beH_patBed']").val(patBed);
+                        $("#illness").val(beH_illness);
+                        $("#remark").val(remark);
+                        selectdoctor(keshi);
+                        $("#keshi").val(keshi);
+                        $("#doctor").val(d_name);
+
+                    }
+                });
+
+            }
+        });
+
+
     </script>
 </head>
 <body>
@@ -97,7 +158,7 @@
     <table class="table table-bordered table-hover definewidth m10">
         <tr>
             <td width="10%" class="tableleft">病历号</td>
-            <td id="id">1101</td>
+            <td id="id" name="beH_id">1101</td>
         </tr>
         <tr>
             <td width="10%" class="tableleft">姓名</td>
@@ -121,13 +182,13 @@
         </tr>
         <tr>
             <td width="10%" class="tableleft">是否自费</td>
-            <td><input type="radio" name="pname0" value="" checked/>否&nbsp;&nbsp;&nbsp;<input type="radio" name="pname0"
+            <td><input type="radio" name="selfPrice" value="" checked/>否&nbsp;&nbsp;&nbsp;<input type="radio" name="selfPrice"
                                                                                               value=""/>是
             </td>
         </tr>
         <tr>
             <td width="10%" class="tableleft">性别</td>
-            <td><input type="radio" name="pname" value="" checked/>男&nbsp;&nbsp;&nbsp;<input type="radio" name="pname"
+            <td><input type="radio" name="sex" value="" checked/>男&nbsp;&nbsp;&nbsp;<input type="radio" name="sex"
                                                                                              value=""/>女
             </td>
         </tr>
@@ -137,47 +198,43 @@
         </tr>
         <tr>
             <td width="10%" class="tableleft">初复诊</td>
-            <td><input type="radio" name="pname1" value="" checked/>初诊&nbsp;&nbsp;&nbsp;<input type="radio"
-                                                                                               name="pname1" value=""/>复诊
+            <td><input type="radio" name="hosR_lookDoctor" value="" checked/>初诊&nbsp;&nbsp;&nbsp;<input type="radio"
+                                                                                               name="hosR_lookDoctor" value=""/>复诊
             </td>
         </tr>
         <tr>
             <td width="10%" class="tableleft">所挂科室</td>
-            <td><select>
-                <option>急诊科</option>
-                <option>骨科</option>
-                <option>血液科</option>
+            <td><select id="keshi">
+
             </select></td>
         </tr>
         <tr>
             <td width="10%" class="tableleft">指定医生</td>
-            <td><select>
-                <option>程俊</option>
-                <option>欧阳雨露</option>
-                <option>王博</option>
+            <td><select id="doctor">
+
             </select></td>
         </tr>
         <tr>
             <td width="10%" class="tableleft">备注</td>
-            <td id="remark">暂无</td>
+            <td><textarea id="remark"></textarea></td>
         </tr>
         <tr>
             <td width="10%" class="tableleft">护理</td>
-            <td><input type="text" name="nurse" value="王小丫"/></td>
+            <td><input type="text" name="beH_nursePeoPle" value="王小丫"/></td>
         </tr>
         <tr>
             <td width="10%" class="tableleft">床位号</td>
-            <td><input type="text" name="patBed" value="468"/></td>
+            <td><input type="text" name="beH_patBed" value="468"/></td>
         </tr>
 
         <tr>
             <td width="10%" class="tableleft">病情</td>
-            <td><textarea id="illness">心律不齐，先天营养不良</textarea></td>
+            <td><textarea id="illness" name="beH_illness">心律不齐，先天营养不良</textarea></td>
         </tr>
         <tr>
             <td colspan="2">
                 <center>
-                    <button type="button" class="btn btn-primary" type="button">保存</button> &nbsp;&nbsp;<button
+                    <button type="button" id="btnUpdate" class="btn btn-primary" type="button">保存</button> &nbsp;&nbsp;<button
                         type="button" class="btn btn-success" name="backid" id="backid">返回列表
                 </button>
                 </center>

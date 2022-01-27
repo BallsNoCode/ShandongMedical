@@ -50,4 +50,8 @@ public class beHosService {
         return behospital;
     }
 
+    @Transactional(propagation = Propagation.REQUIRED,rollbackFor = Exception.class)
+    public Integer updateBeHos(Behospital behospital){
+        return behospitalMapper.updateByPrimaryKeySelective(behospital);
+    }
 }

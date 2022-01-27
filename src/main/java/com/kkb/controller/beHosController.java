@@ -40,5 +40,14 @@ public class beHosController {
         return new ResultVO<>(behospital);
     }
 
+    @RequestMapping(value = "{id}",method = RequestMethod.PUT)
+    public ResultVO<Behospital> update(@PathVariable("id") Integer beH_id,Behospital behospital){
+        behospital.setBeH_id(beH_id);
+        Integer integer = beHosService.updateBeHos(behospital);
+        if (integer == 1){
+            return new ResultVO<>();
+        }
+        return new ResultVO<>(500,"服务器内部异常，请稍后再试！");
+    }
 
 }
