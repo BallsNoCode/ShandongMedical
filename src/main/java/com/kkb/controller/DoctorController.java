@@ -27,11 +27,14 @@ public class DoctorController {
     private DoctorService doctorService;
 
     @RequestMapping(value = "info", method = RequestMethod.GET)
-    public ResultVO<Doctor> queryByPage(Integer pageNum, QueryDoctorVO vo){
+    public ResultVO<Doctor> queryByPage(Integer pageNum,Integer pageSize, QueryDoctorVO vo){
         if (pageNum == null || pageNum < 1){
             pageNum = 1;
         }
-        PageInfo<Doctor> doctorPageInfo = doctorService.queryByPage(pageNum, vo);
+        if (pageSize == null || pageSize < 1){
+            pageSize = 5;
+        }
+        PageInfo<Doctor> doctorPageInfo = doctorService.queryByPage(pageNum,pageSize, vo);
         return new ResultVO<>(doctorPageInfo);
     }
 

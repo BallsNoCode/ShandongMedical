@@ -26,7 +26,7 @@ public class DoctorService {
     private DoctorMapper doctorMapper;
 
     @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
-    public PageInfo<Doctor> queryByPage(Integer pageNum, QueryDoctorVO vo) {
+    public PageInfo<Doctor> queryByPage(Integer pageNum,Integer pageSize, QueryDoctorVO vo) {
         DoctorExample example = new DoctorExample();
         DoctorExample.Criteria criteria = example.createCriteria();
         if (vo.getD_id() != null) {
@@ -38,7 +38,7 @@ public class DoctorService {
         if (vo.getD_name() != null && !"".equals(vo.getD_name().trim())) {
             criteria.andD_nameLike("%" + vo.getD_name().trim() + "%");
         }
-        PageHelper.startPage(pageNum, 5);
+        PageHelper.startPage(pageNum, pageSize);
         List<Doctor> doctors = doctorMapper.selectByExample(example);
         return new PageInfo<>(doctors);
     }

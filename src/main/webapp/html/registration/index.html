@@ -90,7 +90,7 @@
         function loadData(pageNum) {
             let hosR_state = '';
             let data;
-            if (pageNum !== null) {
+            if (pageNum !== null && pageNum !== undefined) {
                 data = $("#myForm").serialize();
                 data += "&pageNum=" + pageNum;
             } else {

@@ -107,14 +107,16 @@
                 $.ajax({
                     type: "GET",
                     url: "/doctor/info",
-                    data: "",
+                    data: {
+                        pageSize : 100
+                    },
                     success: function (vo) {
                         list = vo.pageInfo.list;
                         A:for (let i = 0; i < list.length; i++) {
                             let obj = list[i];
                             for (let j = 0; j < i; j++) {
                                 if (list[i].d_keshi === list[j].d_keshi) {
-                                    break A;
+                                    continue A;
                                 }
                             }
                             $("#keshi").append("<option value='" + obj.d_keshi + "'>" + obj.d_keshi + "</option>");
