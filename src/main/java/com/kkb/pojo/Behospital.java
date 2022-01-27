@@ -19,6 +19,8 @@ public class Behospital {
 
     private Hosregister hosregister;
 
+
+
     public Hosregister getHosregister() {
         return hosregister;
     }

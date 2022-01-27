@@ -57,7 +57,6 @@ public class DoctorController {
 
     @RequestMapping(value = "insert",method = RequestMethod.POST)
     public ResultVO<Doctor> insert(Doctor doctor){
-        doctor.setD_state(0);
         Integer integer = doctorService.insertDoc(doctor);
         if (integer == 1) {
             return new ResultVO<>();

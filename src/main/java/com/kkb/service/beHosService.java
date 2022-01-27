@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author APPDE
@@ -106,6 +107,9 @@ public class beHosService {
     @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     public Behospital queryById(Integer beH_id) {
         Behospital behospital = behospitalMapper.selectByPrimaryKey(beH_id);
+        if (behospital == null){
+            return null;
+        }
         behospital.setHosregister(hosregisterMapper.selectByPrimaryKey(beH_id));
         behospital.getHosregister().setDoctor(doctorMapper.selectByPrimaryKey(behospital.getHosregister().getD_id()));
         return behospital;
@@ -114,5 +118,12 @@ public class beHosService {
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public Integer updateBeHos(Behospital behospital) {
         return behospitalMapper.updateByPrimaryKeySelective(behospital);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED,rollbackFor = Exception.class)
+    public Integer insertBeHos(Behospital behospital) {
+        behospital.setBeH_closePrice(0);
+        behospital.setBeH_state(0);
+        return behospitalMapper.insert(behospital);
     }
 }

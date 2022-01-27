@@ -57,8 +57,8 @@ public class DoctorService {
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public Integer insertDoc(Doctor doctor) {
         doctor.setD_inTime(new Date());
+        doctor.setD_state(0);
         return doctorMapper.insert(doctor);
     }
-
 
 }
