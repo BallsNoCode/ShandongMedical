@@ -81,7 +81,7 @@
                         if (state === "已住院") {
                             if (closePrice === "已结算") {
                                 state = "已结算";
-                                btnStr = '<a href="#" onclick="look(' + beHos_id + ',' + pageNum + ')">详情>>></a>&nbsp;&nbsp;&nbsp;<a href="#">出院</a>&nbsp;&nbsp;&nbsp;<a href="#">退院</a>'
+                                btnStr = '<a href="#" onclick="look(' + beHos_id + ',' + pageNum + ')">详情>>></a>&nbsp;&nbsp;&nbsp;<a href="#" onclick="quitbeHos(' + beHos_id + ',' + pageNum + ')">出院</a>&nbsp;&nbsp;&nbsp;<a href="#">退院</a>'
                             } else {
                                 btnStr = '<a href="#" onclick="look(' + beHos_id + ',' + pageNum + ')">详情>>></a>&nbsp;&nbsp;&nbsp;<a href="#" onclick="update(' + beHos_id + ',' + pageNum + ')">更改</a>'
                             }
@@ -89,7 +89,7 @@
                             btnStr = '<a href="#" onclick="look(' + beHos_id + ',' + pageNum + ')">详情>>></a>';
                         }
                         str += '<tr>' +
-                            '            <td><input type="checkbox" name="check" value="1"></td>' +
+                            '            <td><input type="checkbox" value="' + beHos_id + '" name="check"></td>' +
                             '            <td>' + beHos_id + '</td>' +
                             '            <td>' + name + '</td>' +
                             '            <td>' + beH_patBed + '</td>' +
@@ -106,6 +106,26 @@
                     fillPageData(vo.pageInfo);
                 }
             });
+        }
+
+        function quitbeHos(beH_id, pageNum) {
+            if (confirm("确认操作?")) {
+                $.ajax({
+                    type: "POST",
+                    url: "/beHos/" + beH_id,
+                    data: "_method=DELETE",
+                    dataType: "json",
+                    success: function (vo) {
+                        if (vo.code === 200) {
+                            alert("退号成功!");
+                            loadData(pageNum);
+                        } else {
+                            alert("退号失败！")
+                        }
+                    }
+                });
+            }
+
         }
 
         function look(beH_id, pageNum) {
@@ -162,9 +182,12 @@
                     ids.push(alls[i].value);
                 }
             }
+
             if (ids.length > 0) {
                 if (confirm("确认操作?")) {
-                    alert("成功!");
+                    for (let i = 0; i < ids.length; i++) {
+                        quitbeHos(ids[i]);
+                    }
                 }
             } else {
                 alert("请选中要操作的项");
@@ -237,8 +260,8 @@
             </div>
             <div>
                 <button type="button" class="btn btn-success" id="newNav">添加住院信息</button>&nbsp;&nbsp;&nbsp;
-                <button type="button" class="btn btn-success" onClick="delAll();">出院</button>&nbsp;&nbsp;&nbsp;
-                <button type="button" class="btn btn-success" onClick="delAll();">退院</button>&nbsp;&nbsp;&nbsp;
+                <button type="button" class="btn btn-success" onclick="delAll()">出院</button>&nbsp;&nbsp;&nbsp;
+                <button type="button" class="btn btn-success" onclick="delAll();">退院</button>&nbsp;&nbsp;&nbsp;
                 <button type="button" class="btn btn-success">导出Excel</button>
             </div>
 

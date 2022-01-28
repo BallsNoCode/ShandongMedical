@@ -72,4 +72,13 @@ public class beHosController {
         return new ResultVO<>(500, "服务器内部异常，请稍后再试！");
     }
 
+    @RequestMapping(value = "{id}",method = RequestMethod.DELETE)
+    public ResultVO<Behospital> delBeHos(@PathVariable("id") Integer beH_id){
+        Integer integer = beHosService.delBeHos(beH_id);
+        if (integer == 1) {
+            return new ResultVO<>();
+        }
+        return new ResultVO<>(500, "服务器内部异常，请稍后再试！");
+    }
+
 }

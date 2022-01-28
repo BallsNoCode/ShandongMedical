@@ -126,4 +126,11 @@ public class beHosService {
         behospital.setBeH_state(0);
         return behospitalMapper.insert(behospital);
     }
+
+    @Transactional(propagation = Propagation.REQUIRED,rollbackFor = Exception.class)
+    public Integer delBeHos(Integer beH_id){
+        Behospital behospital = behospitalMapper.selectByPrimaryKey(beH_id);
+        behospital.setBeH_state(1);
+        return behospitalMapper.updateByPrimaryKeySelective(behospital);
+    }
 }
